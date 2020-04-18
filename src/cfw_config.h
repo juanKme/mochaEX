@@ -25,7 +25,7 @@
 #define CFW_CONFIG_H_
 
 #define APP_VERSION         "v0.2"
-#define APP_PATH            "sd:/wiiu/apps/mocha"
+#define APP_PATH            "sd:/wiiu/apps/mocha_sd_access"
 #define CONFIG_PATH         (APP_PATH "/config.ini")
 
 #include "../common/config_types.h"
