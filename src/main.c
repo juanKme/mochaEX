@@ -69,10 +69,10 @@ int Menu_Main(void)
 
     int launch = 1;
 
-    if(forceMenu || config.directLaunch == 0)
+    /*if(forceMenu || config.directLaunch == 0)
     {
         launch = ShowMenu(&config);
-    }
+    }*/
 
     int returnCode = 0;
 
