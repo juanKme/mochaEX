@@ -21,8 +21,8 @@
  * 3. This notice may not be removed or altered from any source
  * distribution.
  ***************************************************************************/
-#ifndef __SYS_FUNCTIONS_H_
-#define __SYS_FUNCTIONS_H_
+#ifndef __PROC_UI_FUNCTIONS_H_
+#define __PROC_UI_FUNCTIONS_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,21 +30,18 @@ extern "C" {
 
 #include <gctypes.h>
 
-extern unsigned int sysapp_handle;
+extern u32 proc_ui_handle;
 
-void InitSysFunctionPointers(void);
-void InitAcquireSys(void);
+typedef u32 (*ProcUICallback)(void*);
 
-extern int(*_SYSLaunchTitleByPathFromLauncher)(const char* path, int len, int zero);
-extern int (* SYSRelaunchTitle)(int argc, char** argv);
-extern int (* SYSLaunchMenu)(void);
-extern int (* SYSCheckTitleExists)(u64 titleId);
-extern int (* SYSLaunchTitle)(u64 titleId);
-extern int (* SYSLaunchSettings)(int unk);
+void InitProcUIFunctionPointers(void);
+void InitAcquireProcUI(void);
 
+extern u32 (*ProcUIInForeground)(void);
+extern void (*ProcUIRegisterCallback)(u32 type,ProcUICallback callback,void* param, u32 unkwn);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // __SYS_FUNCTIONS_H_
+#endif // __PROC_UI_FUNCTIONS_H_

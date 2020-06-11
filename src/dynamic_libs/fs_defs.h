@@ -1,5 +1,5 @@
 #ifndef FS_DEFS_H
-#define	FS_DEFS_H
+#define FS_DEFS_H
 
 #include <gctypes.h>
 
@@ -52,10 +52,16 @@ typedef struct
     char        name[FS_MAX_ENTNAME_SIZE];
 } FSDirEntry;
 
+    typedef void (*FSAsyncCallback)(void *pClient, void *pCmd, int result, void *context);
+    typedef struct
+    {
+    FSAsyncCallback userCallback;
+    void            *userContext;
+    void            *ioMsgQueue;
+    } FSAsyncParams;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif	/* FS_DEFS_H */
-
+#endif /* FS_DEFS_H */

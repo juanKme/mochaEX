@@ -28,6 +28,7 @@
 extern "C" {
 #endif
 
+#include <gctypes.h>
 #include "gx2_types.h"
 
 extern unsigned int gx2_handle;

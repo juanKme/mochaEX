@@ -28,6 +28,11 @@ extern "C" {
 #define FS_SOURCETYPE_HFIO              1
 #define FS_SOURCETYPE_HFIO              1
 
+#define FS_STATUS_OK                    0
+#define FS_STATUS_EXISTS                -5
+#define FS_STATUS_STORAGE_FULL          -12
+#define FS_STATUS_JOURNAL_FULL          -13
+
 #define FS_MOUNT_SOURCE_SIZE            0x300
 #define FS_CLIENT_SIZE                  0x1700
 #define FS_CMD_BLOCK_SIZE               0xA80
@@ -59,4 +64,3 @@ typedef struct
 #endif
 
 #endif	/* FS_DEFS_H */
-
