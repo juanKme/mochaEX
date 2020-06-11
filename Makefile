@@ -28,12 +28,15 @@ export OBJCOPY	:=	$(PREFIX)objcopy
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-TARGET		:=	mocha
+TARGET		:=	mochaEX
 BUILD		:=	build
 BUILD_DBG	:=	$(TARGET)_dbg
 SOURCES		:=	src \
+				src/common \
 				src/dynamic_libs \
 				src/fs \
+				src/kernel \
+				src/patcher \
 				src/system \
 				src/utils
 DATA		:=	data
@@ -123,7 +126,7 @@ $(BUILD): $(CURDIR)/ios_kernel/ios_kernel.bin.h
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
-$(CURDIR)/ios_kernel/ios_kernel.bin.h: $(CURDIR)/ios_usb/ios_usb.bin.h $(CURDIR)/ios_mcp/ios_mcp.bin.h $(CURDIR)/ios_fs/ios_fs.bin.h $(CURDIR)/ios_bsp/ios_bsp.bin.h $(CURDIR)/ios_acp/ios_acp.bin.h 
+$(CURDIR)/ios_kernel/ios_kernel.bin.h: $(CURDIR)/ios_usb/ios_usb.bin.h $(CURDIR)/ios_mcp/ios_mcp.bin.h $(CURDIR)/ios_fs/ios_fs.bin.h $(CURDIR)/ios_bsp/ios_bsp.bin.h $(CURDIR)/ios_acp/ios_acp.bin.h
 	@$(MAKE) --no-print-directory -C $(CURDIR)/ios_kernel -f  $(CURDIR)/ios_kernel/Makefile
 
 $(CURDIR)/ios_usb/ios_usb.bin.h:
@@ -137,7 +140,7 @@ $(CURDIR)/ios_bsp/ios_bsp.bin.h:
 
 $(CURDIR)/ios_mcp/ios_mcp.bin.h:
 	@$(MAKE) --no-print-directory -C $(CURDIR)/ios_mcp -f  $(CURDIR)/ios_mcp/Makefile
-	
+
 $(CURDIR)/ios_acp/ios_acp.bin.h:
 	@$(MAKE) --no-print-directory -C $(CURDIR)/ios_acp -f  $(CURDIR)/ios_acp/Makefile
 

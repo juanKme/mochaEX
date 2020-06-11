@@ -20,3 +20,4 @@ This adaptation of **Mocha CFW** for Wii U is based on the original work by @dim
 Aditional features of the **SwapDRC Lite** project like *Splatoon's enhanced controls, TCPGecko and Cafiine* are not included in this project. 
 
 
+(NOTE: This project is in beta testing)

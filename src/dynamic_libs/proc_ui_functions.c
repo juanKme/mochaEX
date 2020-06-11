@@ -21,30 +21,24 @@
  * 3. This notice may not be removed or altered from any source
  * distribution.
  ***************************************************************************/
-#ifndef __SYS_FUNCTIONS_H_
-#define __SYS_FUNCTIONS_H_
+#include "os_functions.h"
+#include "proc_ui_functions.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+u32 proc_ui_handle __attribute__((section(".data"))) = 0;
 
-#include <gctypes.h>
+EXPORT_DECL(u32, ProcUIInForeground, void);
+EXPORT_DECL(void, ProcUIRegisterCallback, u32 type,ProcUICallback callback,void* param, u32 unkwn);
 
-extern unsigned int sysapp_handle;
-
-void InitSysFunctionPointers(void);
-void InitAcquireSys(void);
-
-extern int(*_SYSLaunchTitleByPathFromLauncher)(const char* path, int len, int zero);
-extern int (* SYSRelaunchTitle)(int argc, char** argv);
-extern int (* SYSLaunchMenu)(void);
-extern int (* SYSCheckTitleExists)(u64 titleId);
-extern int (* SYSLaunchTitle)(u64 titleId);
-extern int (* SYSLaunchSettings)(int unk);
-
-
-#ifdef __cplusplus
+void InitAcquireProcUI(void)
+{
+    OSDynLoad_Acquire("proc_ui.rpl", &proc_ui_handle);
 }
-#endif
 
-#endif // __SYS_FUNCTIONS_H_
+void InitProcUIFunctionPointers(void)
+{
+    u32 *funcPointer = 0;
+    InitAcquireProcUI();
+
+    OS_FIND_EXPORT(proc_ui_handle, ProcUIInForeground);
+    OS_FIND_EXPORT(proc_ui_handle, ProcUIRegisterCallback);
+}

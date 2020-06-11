@@ -190,7 +190,7 @@ int Menu_Main(void)
         int res = ExecuteIOSExploit(&config);
         if(res == 0)
             {
-                // The SwapDRC functionality has been introduced here.
+            // The SwapDRC functionality has been introduced here.
             if(gAppStatus == 0){
                 run_SwapDRC();
             }

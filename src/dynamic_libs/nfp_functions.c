@@ -21,30 +21,18 @@
  * 3. This notice may not be removed or altered from any source
  * distribution.
  ***************************************************************************/
-#ifndef __SYS_FUNCTIONS_H_
-#define __SYS_FUNCTIONS_H_
+#include "os_functions.h"
+#include "nfp_functions.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+u32 nfp_handle __attribute__((section(".data"))) = 0;
 
-#include <gctypes.h>
-
-extern unsigned int sysapp_handle;
-
-void InitSysFunctionPointers(void);
-void InitAcquireSys(void);
-
-extern int(*_SYSLaunchTitleByPathFromLauncher)(const char* path, int len, int zero);
-extern int (* SYSRelaunchTitle)(int argc, char** argv);
-extern int (* SYSLaunchMenu)(void);
-extern int (* SYSCheckTitleExists)(u64 titleId);
-extern int (* SYSLaunchTitle)(u64 titleId);
-extern int (* SYSLaunchSettings)(int unk);
-
-
-#ifdef __cplusplus
+void InitAcquireNFP(void)
+{
+    OSDynLoad_Acquire("nn_nfp.rpl", &nfp_handle);
 }
-#endif
 
-#endif // __SYS_FUNCTIONS_H_
+void InitNFPFunctionPointers(void)
+{
+    u32 *funcPointer = 0;
+    InitAcquireNFP();
+}

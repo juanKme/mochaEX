@@ -50,22 +50,24 @@ extern "C" {
 #define EXPORT_FUNC_WRITE(func, val)    *(u32*)(((u32)&func) + 0) = (u32)val
 
 #define OS_FIND_EXPORT(handle, func)    funcPointer = 0;                                                                \
-                                        OSDynLoad_FindExport(handle, 0, # func, &funcPointer);                          \
-                                        if(!funcPointer)                                                                \
-                                            OSFatal("Function " # func " is NULL");                                     \
-                                        EXPORT_FUNC_WRITE(func, funcPointer);
+OSDynLoad_FindExport(handle, 0, # func, &funcPointer);                          \
+if(!funcPointer)                                                                \
+OSFatal("Function " # func " is NULL");                                     \
+EXPORT_FUNC_WRITE(func, funcPointer);
 
 #define OS_FIND_EXPORT_EX(handle, func, func_p)                                                                         \
-                                        funcPointer = 0;                                                                \
-                                        OSDynLoad_FindExport(handle, 0, # func, &funcPointer);                          \
-                                        if(!funcPointer)                                                                \
-                                            OSFatal("Function " # func " is NULL");                                     \
-                                        EXPORT_FUNC_WRITE(func_p, funcPointer);
+funcPointer = 0;                                                                \
+OSDynLoad_FindExport(handle, 0, # func, &funcPointer);                          \
+if(!funcPointer)                                                                \
+_os_find_export(handle, # func, &funcPointer);                                  \
+OSFatal("Function " # func " is NULL");                                     \
+EXPORT_FUNC_WRITE(func_p, funcPointer);
 
 #define OS_MUTEX_SIZE                   44
 
 /* Handle for coreinit */
 extern unsigned int coreinit_handle;
+extern void _os_find_export(u32 handle, const char *funcName, void *funcPointer);
 void InitOSFunctionPointers(void);
 void InitAcquireOS(void);
 
@@ -92,6 +94,9 @@ extern int (* OSIsThreadSuspended)(void *thread);
 extern int (* OSJoinThread)(void * thread, int * ret_val);
 extern int (* OSSetThreadPriority)(void * thread, int priority);
 extern void (* OSDetachThread)(void * thread);
+extern void * (* OSGetCurrentThread)(void);
+extern const char * (* OSGetThreadName)(void * thread);
+
 extern void (* OSSleepTicks)(u64 ticks);
 extern u64 (* OSGetTick)(void);
 extern u64 (* OSGetTime)(void);
@@ -128,6 +133,7 @@ extern int (*OSScreenClearBufferEx)(unsigned int bufferNum, unsigned int temp);
 extern int (*OSScreenFlipBuffersEx)(unsigned int bufferNum);
 extern int (*OSScreenPutFontEx)(unsigned int bufferNum, unsigned int posX, unsigned int posY, const char * buffer);
 extern int (*OSScreenEnableEx)(unsigned int bufferNum, int enable);
+extern u32 (*OSScreenPutPixelEx)(u32 bufferNum, u32 posX, u32 posY, u32 color);
 
 typedef unsigned char (*exception_callback)(void * interruptedContext);
 extern void (* OSSetExceptionCallback)(u8 exceptionType, exception_callback newCallback);
@@ -136,12 +142,67 @@ extern int (*IOS_Ioctl)(int fd, unsigned int request, void *input_buffer,unsigne
 extern int (*IOS_Open)(char *path, unsigned int mode);
 extern int (*IOS_Close)(int fd);
 
+
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//! Memory functions
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+extern u32 *pMEMAllocFromDefaultHeapEx;
+extern u32 *pMEMAllocFromDefaultHeap;
+extern u32 *pMEMFreeToDefaultHeap;
+
+extern s32 (* MEMGetBaseHeapHandle)(s32 mem_arena);
+extern u32 (* MEMGetAllocatableSizeForFrmHeapEx)(s32 heap, s32 align);
+extern void* (* MEMAllocFromFrmHeapEx)(s32 heap, u32 size, s32 align);
+extern void (* MEMFreeToFrmHeap)(s32 heap, s32 mode);
+extern void *(* MEMAllocFromExpHeapEx)(s32 heap, u32 size, s32 align);
+extern s32 (* MEMCreateExpHeapEx)(void* address, u32 size, unsigned short flags);
+extern void *(* MEMDestroyExpHeap)(s32 heap);
+extern void (* MEMFreeToExpHeap)(s32 heap, void* ptr);
+extern void* (* OSAllocFromSystem)(int size, int alignment);
+extern void (* OSFreeToSystem)(void *addr);
+extern int (* OSIsAddressValid)(void *ptr);
+
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //! MCP functions
 //!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 extern int (* MCP_Open)(void);
 extern int (* MCP_Close)(int handle);
 extern int (* MCP_GetOwnTitleInfo)(int handle, void * data);
+
+
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//! LOADER functions
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+extern s32 (* LiWaitIopComplete)(s32 unknown_syscall_arg_r3, s32 * remaining_bytes);
+extern s32 (* LiWaitIopCompleteWithInterrupts)(s32 unknown_syscall_arg_r3, s32 * remaining_bytes);
+extern void (* addr_LiWaitOneChunk)(void);
+extern void (* addr_sgIsLoadingBuffer)(void);
+extern void (* addr_gDynloadInitialized)(void);
+
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//! Kernel function addresses
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+extern void (* addr_PrepareTitle_hook)(void);
+
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//! Other function addresses
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+extern void (*DCInvalidateRange)(void *buffer, u32 length);
+
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//! Energy Saver functions
+//!----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+////Burn-in Reduction
+extern s32 (*IMEnableDim)(void);
+extern s32 (*IMDisableDim)(void);
+extern s32 (*IMIsDimEnabled)(s32 * result);
+//Auto power down
+extern s32 (*IMEnableAPD)(void);
+extern s32 (*IMDisableAPD)(void);
+extern s32 (*IMIsAPDEnabled)(s32 * result);
+extern s32 (*IMIsAPDEnabledBySysSettings)(s32 * result);
+
+extern s32 (*OSSendAppSwitchRequest)(s32 param,void* unknown1,void* unknown2);
 
 #ifdef __cplusplus
 }

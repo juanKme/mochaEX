@@ -35,9 +35,11 @@ void InitFSFunctionPointers(void);
 
 extern int (* FSInit)(void);
 extern int (* FSShutdown)(void);
+extern s32 (* FSAddClient)(void *pClient, s32 errHandling);
 extern int (* FSAddClientEx)(void *pClient, int unk_zero_param, int errHandling);
 extern int (* FSDelClient)(void *pClient);
 extern void (* FSInitCmdBlock)(void *pCmd);
+extern void *(* FSGetCurrentCmdBlock)(void *pClient);
 extern int (* FSGetMountSource)(void *pClient, void *pCmd, int type, void *source, int errHandling);
 
 extern int (* FSMount)(void *pClient, void *pCmd, void *source, char *target, uint32_t bytes, int errHandling);
